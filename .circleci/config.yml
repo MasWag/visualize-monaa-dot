@@ -1,0 +1,23 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: fpco/stack-build:lts-13.10
+    working_directory: /home/stackage
+    steps:
+      - checkout
+      - restore_cache:
+          key: cache
+      - run:
+          name: Build
+          command: stack build
+      - save_cache:
+          key: cache
+          paths:
+            - ~/.stack
+      - run:
+          name: Run
+          command: stack run < ./example/small.dot
+      - run:
+          name: Run tests
+          command: stack test

@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/MasWag/visualize-monaa-dot.svg?style=svg)](https://circleci.com/gh/MasWag/visualize-monaa-dot)
+
 visualize-monaa-dot
 ===================
 
