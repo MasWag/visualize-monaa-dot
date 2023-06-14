@@ -9,8 +9,12 @@ import Data.Maybe
 
 translateState :: InputState -> OutputState
 translateState (Dot.DotNode nodeID attributes) =
-  Dot.DotNode nodeID [Shape shape]
+  Dot.DotNode nodeID ((Shape shape):event)
   where
+    event = case find (sameAttribute (Label (StrLabel ""))) attributes of
+      Nothing -> [Label (StrLabel $ T.pack $ nodeID)]
+      Just (Label (StrLabel str)) -> [Label (StrLabel $ T.append (T.pack $ nodeID ++ ", ") str)]
+      Just _ -> [Label (StrLabel $ T.pack $ nodeID)]
     shape = case find (sameAttribute (UnknownAttribute "match" "1")) attributes of
       Nothing -> Circle
       Just (UnknownAttribute "match" "0") -> Circle
@@ -23,10 +27,10 @@ translateTransition (Dot.DotEdge fromNode toNode attributes) =
   where
     label = T.concat [event, guardSep, guard, resetSep, reset]
     event = case find (sameAttribute (Label (StrLabel ""))) attributes of
-      Nothing -> "empty"
+      Nothing -> ""
       Just (Label (StrLabel str)) -> str
-      Just _ -> "empty"
-    guardSep = if guard == "" then "" else ", "
+      Just _ -> ""
+    guardSep = if guard == "" || event == "" then "" else ", "
     resetSep = if reset == "" then "" else " / "
     guard = case find (sameAttribute (UnknownAttribute "guard" "")) attributes of
       Nothing -> ""
